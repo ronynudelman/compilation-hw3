@@ -1,4 +1,4 @@
-#include <stack>
+#include <list>
 #include <string>
 #include "Tables.h"
 
@@ -37,7 +37,7 @@ bool SymbolTable::is_symbol_exist(std::string name) {
 }
 
 
-SymbolTableStack::SymbolTableStack() : symbol_tables(std::stack<SymbolTable>()) {
+SymbolTableStack::SymbolTableStack() : symbol_tables(std::list<SymbolTable>()) {
   SymbolTable new_symbol_table;
   std::vector<std::string> print_func_args;
   print_func_args.push_back("STRING");
@@ -70,7 +70,7 @@ bool SymbolTableStack::is_symbol_exist(std::string name) {
 }
 
 
-OffsetTableStack::OffsetTableStack() : offsets(std::stack<int>()) {
+OffsetTableStack::OffsetTableStack() : offsets(std::list<int>()) {
     offsets.push_back(0);
 }
 
