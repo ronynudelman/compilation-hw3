@@ -1,3 +1,7 @@
+#ifndef TABLES_H_
+#define  TABLES_H_
+
+
 #include <list>
 #include <vector>
 #include <string>
@@ -12,9 +16,13 @@ private:
   bool is_func;
   std::vector<std::string> arguments;
 public:
-  SymbolTableEntry(std::string name, int offset, Type type, bool is_func = false,
+  SymbolTableEntry(std::string name, int offset, std::string type, bool is_func = false,
                    std::vector<std::string> arguments = std::vector<std::string>());
   std::string get_name();
+  int get_offset();
+  std::string get_type();
+  bool get_is_func();
+  std::vector<std::string> get_arguments();
 };
 
 
@@ -22,11 +30,13 @@ class SymbolTable {
 private:
   std::list<SymbolTableEntry> symbol_table_entries;
 public:
-  SymbolTable();
-  void push_entry(std::string name, int offset, Type type, bool is_func = false,
+  SymbolTable() = default;
+  void push_entry(std::string name, int offset, std::string type, bool is_func = false,
                   std::vector<std::string> arguments = std::vector<std::string>());
   void pop_entry();
-  bool is_symbol_exist(std::string name); // TODO
+  bool is_symbol_exist(std::string name);
+  bool is_main_func_exist();
+  void print();
 };
 
 
@@ -37,7 +47,10 @@ public:
   SymbolTableStack();
   void push_symbol_table();
   void pop_symbol_table();
-  bool is_symbol_exist(std::string name); // TODO
+  SymbolTable& top_symbol_table();
+  bool is_symbol_exist(std::string name);
+  bool is_main_func_exist();
+  void print_top_symbol_table();
 };
 
 
@@ -50,4 +63,7 @@ public:
   void pop_offset();
   int top_offset();
   void inc_top_offset();
-}
+};
+
+
+#endif // TABLES_H_

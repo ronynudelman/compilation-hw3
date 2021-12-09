@@ -1,9 +1,11 @@
 #include <list>
 #include <string>
+#include <cassert>
+#include "hw3_output.hpp"
 #include "Tables.h"
 
 
-SymbolTableEntry::SymbolTableEntry(std::string name, int offset, Type type, bool is_func,
+SymbolTableEntry::SymbolTableEntry(std::string name, int offset, std::string type, bool is_func,
                                   std::vector<std::string> arguments) : name(name),
                                                                         offset(offset),
                                                                         type(type),
@@ -16,7 +18,27 @@ std::string SymbolTableEntry::get_name() {
 }
 
 
-void SymbolTable::push_entry(std::string name, int offset, Type type, bool is_func,
+int SymbolTableEntry::get_offset() {
+  return offset;
+}
+
+
+std::string SymbolTableEntry::get_type() {
+  return type;
+}
+
+
+bool SymbolTableEntry::get_is_func() {
+  return is_func;
+}
+
+
+std::vector<std::string> SymbolTableEntry::get_arguments() {
+  return arguments;
+}
+
+
+void SymbolTable::push_entry(std::string name, int offset, std::string type, bool is_func,
                             std::vector<std::string> arguments) {
   SymbolTableEntry new_entry(name, offset, type, is_func, arguments);
   symbol_table_entries.push_back(new_entry);
@@ -28,12 +50,37 @@ void SymbolTable::pop_entry() {
 }
 
 bool SymbolTable::is_symbol_exist(std::string name) {
-  for (std::list<SymbolTableEntry>::reverse_iterator it = symbol_table_entries.rbegin(); it != symbol_table_entries.rend(); ++it) {
+  for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
     if ((*it).get_name() == name) {
       return true;
     }
   }
   return false;
+}
+
+
+bool SymbolTable::is_main_func_exist() {
+  for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
+    if ((*it).get_name() == "main" && (*it).get_type() == "VOID" && (*it).get_is_func() && (*it).get_arguments().empty()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+void SymbolTable::print() {
+  for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
+    SymbolTableEntry current_entry = *it;
+    std::string current_entry_name = current_entry.get_name();
+    std::string current_entry_type = current_entry.get_type();
+    int current_entry_offset = current_entry.get_offset();
+    if (current_entry.get_is_func()) {
+      std::vector<std::string> current_entry_args = current_entry.get_arguments();
+      current_entry_type = output::makeFunctionType(current_entry_type, current_entry_args);
+    }
+    output::printID(current_entry_name, current_entry_offset, current_entry_type);
+  }
 }
 
 
@@ -60,13 +107,31 @@ void SymbolTableStack::pop_symbol_table() {
 }
 
 
+SymbolTable& SymbolTableStack::top_symbol_table() {
+  return symbol_tables.back();
+}
+
+
 bool SymbolTableStack::is_symbol_exist(std::string name) {
-  for (std::list<SymbolTable>::reverse_iterator it = symbol_tables.rbegin(); it != symbol_tables.rend(); ++it) {
+  for (std::list<SymbolTable>::iterator it = symbol_tables.begin(); it != symbol_tables.end(); ++it) {
     if ((*it).is_symbol_exist(name)) {
       return true;
     }
   }
   return false;
+}
+
+
+bool SymbolTableStack::is_main_func_exist() {
+  assert(symbol_tables.size() == 1);
+  SymbolTable symbol_table = symbol_tables.back();
+  return symbol_table.is_main_func_exist();
+}
+
+
+void SymbolTableStack::print_top_symbol_table() {
+  SymbolTable symbol_table = top_symbol_table();
+  symbol_table.print();
 }
 
 
@@ -76,7 +141,7 @@ OffsetTableStack::OffsetTableStack() : offsets(std::list<int>()) {
 
 
 void OffsetTableStack::push_offset() {
-  int copy_top_offset = offsets.top();
+  int copy_top_offset = offsets.back();
   offsets.push_back(copy_top_offset);
 }
 

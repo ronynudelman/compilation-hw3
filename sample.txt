@@ -1,0 +1,17 @@
+int f(int a, bool b, int c) {
+  int d = 0;
+  int e = 0;
+}
+
+
+
+void main() {
+  int x = 0;
+}
+
+
+
+int g(int a, bool b, int c) {
+  int d = 0;
+  int e = 0;
+}

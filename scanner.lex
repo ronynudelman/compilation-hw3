@@ -1,6 +1,7 @@
 %{
-#include "parser.tab.hpp"
-#include "output.hpp"
+  #include "Types.h"
+  #include "hw3_output.hpp"
+  #include "parser.tab.hpp"
 %}
 
 %option yylineno
@@ -10,11 +11,11 @@ whitespace                                    [ \t\n\r]
 
 %%
 
-void                                          yylval = new TokenType(void_type); return VOID;
-int                                           yylval = new TokenType(int_type); return INT;
-byte                                          yylval = new TokenType(byte_type); return BYTE;
+void                                          return VOID;
+int                                           return INT;
+byte                                          return BYTE;
 b                                             return B;
-bool                                          yylval = new TokenType(bool_type); return BOOL;
+bool                                          return BOOL;
 const										                      return CONST;
 and                                           return AND;
 or                                            return OR;
@@ -38,12 +39,12 @@ continue                                      return CONTINUE;
 ==|!=                                         return RELOP_EQUAL;
 [\*\/]                                    	  return BINOP_MUL;
 [\+\-]                                        return BINOP_ADD;
-[a-zA-Z][a-zA-Z0-9]*                          return ID;
+[a-zA-Z][a-zA-Z0-9]*                          yylval = new IDCls(yytext); return ID;
 0|[1-9][0-9]*                                 return NUM;
 \"([^\n\r\"\\]|\\[rnt"\\])+\"			            return STRING;
 
 \/\/[^\r\n]*[ \r|\n|\r\n]?                    ;
 {whitespace}                                  ;
-.                                             output::errorLex(yylineno);
+.                                             ; // TODO handle error
 
 %%

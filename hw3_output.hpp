@@ -3,7 +3,11 @@
 
 #include <vector>
 #include <string>
+#include "Types.h"
+
+
 using namespace std;
+
 
 namespace output{
     void endScope();
@@ -28,5 +32,16 @@ namespace output{
     void errorConstDef(int lineno);
     void errorConstMismatch(int lineno);
 }
+
+
+#define YYSTYPE AbsCls*
+
+
+extern int yylineno;
+extern char* yytext;
+extern int yylineno;
+int yylex();
+void yyerror(const char*);
+
 
 #endif

@@ -1,18 +1,8 @@
 %{
-	#include "output.hpp"
-	extern int yylineno;
-	int yylex();
-	void yyerror(const char*);
-
-	// TODO - INITIALIZE THE GLOBAL TABLES
-	SymbolTableStack symbol_table_stack;
-	OffsetTableStack offset_table_stack;
-	// TODO - functions to implement
-	void check_main_exist(); // check if main function exist and calls errorMainMissing() else
-	void print_scope(); // print the symbols of the scope
-	void open_scope(); // add new scope (push a new element to the symbol table stack)
-	void close_scope(); // print last scope and close it at the end (remove the top element from the symbol table stack)
-	add_new_function(std::string name, Type ret_type, std::vector<std::string> arguments); // add a new function to the symbol table stack
+	#include "Utilities.h"
+	#include "Tables.h"
+	#include "Types.h"
+	#include "hw3_output.hpp"
 %}
 
 
@@ -53,69 +43,79 @@
 %%
 
 
-Program		:	Funcs                                                     		{check_main_exist(); print_scope();}
+Program		:	Funcs                                                     		{check_main_exist(); close_scope();}
 ;
 Funcs		:	/*epsilon*/                                                  		{}
 				|	FuncDecl Funcs                                              		{}
 ;
-FuncDecl	:	RetType ID LPAREN Formals {add_new_function(...) /* TODO */} RPAREN {open_scope();} LBRACE Statements RBRACE    	{close_scope();}
+FuncDecl	:	RetType
+						ID
+						LPAREN
+						Formals
+						RPAREN
+						{add_func_to_symbol_table($2->get_name(), $1->get_name(), $4->get_args_types());}
+						LBRACE
+						{open_scope(); add_func_args_to_symbol_table($4->get_args_types(), $4->get_args_names());}
+						Statements
+						RBRACE
+						{close_scope();}
 ;
-RetType		:	Type                                                         	{
-					|	VOID                                                         	{
+RetType		:	Type                                                         	{$$ = new RetTypeCls($1->get_name());}
+					|	VOID                                                         	{$$ = new RetTypeCls("VOID");}
 ;
-Formals		:	/*epsilon*/                                                  	{output::printProductionRule(7);}
-					|	FormalsList                                                  	{output::printProductionRule(8);} // after collecting all arguments, store them for adding them to the current function later on
+Formals		:	/*epsilon*/                                                  	{$$ = new FormalsCls();}
+					|	FormalsList                                                  	{$$ = new FormalsCls($1->get_args_types(), $1->get_args_names());}
 ;
-FormalsList	:	FormalDecl                                              		{output::printProductionRule(9);}
-						|	FormalDecl COMMA FormalsList                         				{output::printProductionRule(10);}
+FormalsList	:	FormalDecl                       {$$ = new FormalsListCls(); $$->add_formal_decl($1);}
+						|	FormalDecl COMMA FormalsList     {$3->add_formal_decl($1);}
 ;
-FormalDecl	:	TypeAnnotation Type ID                                 			{output::printProductionRule(11);} // add the current parameter to the function list
+FormalDecl	:	TypeAnnotation Type ID       {$$ = new FormalDeclCls($1->get_is_const(), $2->get_name(), $3->get_name());}
 ;
-Statements	:	Statement                                                		{output::printProductionRule(12);}
-						|	Statements Statement                                  			{output::printProductionRule(13);}
+Statements	:	Statement                                                		{ }
+						|	Statements Statement                                  			{ }
 ;
-Statement	:	LBRACE Statements RBRACE                                     	{output::printProductionRule(14);}
-					|	TypeAnnotation Type ID SC                                    	{output::printProductionRule(15);}
-					|	TypeAnnotation Type ID ASSIGN Exp SC                         	{output::printProductionRule(16);}
-					|	ID ASSIGN Exp SC                                             	{output::printProductionRule(17);}
-					|	Call SC                                                      	{output::printProductionRule(18);}
-					|	RETURN SC                                                    	{output::printProductionRule(19);}
-					|	RETURN Exp SC                                                	{output::printProductionRule(20);}
-					|	IF LPAREN Exp RPAREN Statement                               	{output::printProductionRule(21);}
-					|	IF LPAREN Exp RPAREN Statement ELSE Statement                	{output::printProductionRule(22);}
-					|	WHILE LPAREN Exp RPAREN Statement                            	{output::printProductionRule(23);}
-					|	BREAK SC                                                     	{output::printProductionRule(24);}
-					|	CONTINUE SC                                                  	{output::printProductionRule(25);}
+Statement	:	LBRACE Statements RBRACE                                     	{ }
+					|	TypeAnnotation Type ID SC                                    	{ }
+					|	TypeAnnotation Type ID ASSIGN Exp SC                         	{ }
+					|	ID ASSIGN Exp SC                                             	{ }
+					|	Call SC                                                      	{ }
+					|	RETURN SC                                                    	{ }
+					|	RETURN Exp SC                                                	{ }
+					|	IF LPAREN Exp RPAREN Statement                               	{ }
+					|	IF LPAREN Exp RPAREN Statement ELSE Statement                	{ }
+					|	WHILE LPAREN Exp RPAREN Statement                            	{ }
+					|	BREAK SC                                                     	{ }
+					|	CONTINUE SC                                                  	{ }
 ;
-Call		:	ID LPAREN ExpList RPAREN                                     		{output::printProductionRule(26);}
-				|	ID LPAREN RPAREN                                             		{output::printProductionRule(27);}
+Call		:	ID LPAREN ExpList RPAREN                                     		{ }
+				|	ID LPAREN RPAREN                                             		{ }
 ;
-ExpList		:	Exp                                                        		{output::printProductionRule(28);}
-					|	Exp COMMA ExpList                                            	{output::printProductionRule(29);}
+ExpList		:	Exp                                                        		{ }
+					|	Exp COMMA ExpList                                            	{ }
 ;
-Type		:	INT                                                          		{output::printProductionRule(30);}
-				|	BYTE                                                         		{output::printProductionRule(31);}
-				|	BOOL                                                         		{output::printProductionRule(32);}
+Type		:	INT                                                          		{$$ = new TypeCls("INT");}
+				|	BYTE                                                         		{$$ = new TypeCls("BYTE");}
+				|	BOOL                                                         		{$$ = new TypeCls("BOOL");}
 ;
-TypeAnnotation	:	/*epsilon*/                               							{output::printProductionRule(33);}
-								|	CONST                                                   {output::printProductionRule(34);}
+TypeAnnotation	:	/*epsilon*/                               							{ }
+								|	CONST                                                   { }
 ;
-Exp			:	LPAREN Exp RPAREN                                          			{output::printProductionRule(35);}
-				|	Exp BINOP_MUL Exp                                           		{output::printProductionRule(36);}
-				|	Exp BINOP_ADD Exp                                            		{output::printProductionRule(36);}
-				|	ID                                                           		{output::printProductionRule(37);}
-				|	Call                                                         		{output::printProductionRule(38);}
-				|	NUM                                                          		{output::printProductionRule(39);}
-				|	NUM B                                                        		{output::printProductionRule(40);}
-				|	STRING                                                       		{output::printProductionRule(41);}
-				|	TRUE                                                         		{output::printProductionRule(42);}
-				|	FALSE                                                        		{output::printProductionRule(43);}
-				|	NOT Exp                                                      		{output::printProductionRule(44);}
-				|	Exp AND Exp                                                  		{output::printProductionRule(45);}
-				|	Exp OR Exp                                                   		{output::printProductionRule(46);}
-				|	Exp RELOP_COMPARE Exp                                        		{output::printProductionRule(47);}
-				|	Exp RELOP_EQUAL Exp                                          		{output::printProductionRule(47);}
-				|	LPAREN Type RPAREN Exp						 															{output::printProductionRule(48);}
+Exp			:	LPAREN Exp RPAREN                                          			{ }
+				|	Exp BINOP_MUL Exp                                           		{ }
+				|	Exp BINOP_ADD Exp                                            		{ }
+				|	ID                                                           		{ }
+				|	Call                                                         		{ }
+				|	NUM                                                          		{ }
+				|	NUM B                                                        		{ }
+				|	STRING                                                       		{ }
+				|	TRUE                                                         		{ }
+				|	FALSE                                                        		{ }
+				|	NOT Exp                                                      		{ }
+				|	Exp AND Exp                                                  		{ }
+				|	Exp OR Exp                                                   		{ }
+				|	Exp RELOP_COMPARE Exp                                        		{ }
+				|	Exp RELOP_EQUAL Exp                                          		{ }
+				|	LPAREN Type RPAREN Exp						 															{ }
 ;
 
 
@@ -123,7 +123,7 @@ Exp			:	LPAREN Exp RPAREN                                          			{output::p
 
 
 void yyerror(const char* input) {
-	output::errorSyn(yylineno);
+	// TODO - need to complete
 	exit(1);
 }
 
