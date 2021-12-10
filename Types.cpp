@@ -21,7 +21,7 @@ FormalDeclCls::FormalDeclCls(bool is_const, std::string type, std::string name) 
 void FormalsListCls::add_formal_decl(AbsCls* new_decl) {
   std::string new_type;
   if (new_decl->get_is_const()) {
-    new_type = std::string("CONST") + new_decl->get_type();
+    new_type = std::string("CONST ") + new_decl->get_type();
   } else {
     new_type = new_decl->get_type();
   }
