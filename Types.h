@@ -18,19 +18,12 @@ extern const std::string const_bool_type;
 
 class AbsCls {
 public:
-  // virtual std::string get_name();
-  // virtual std::string get_type();
-  // virtual std::vector<std::string> get_args_types();
-  // virtual std::vector<std::string> get_args_names();
-  // virtual void add_formal_decl(AbsCls*);
-  // virtual bool get_is_const();
-  virtual std::string get_name() { std::cout << "hi1" << std::endl; return std::string(); }
-  virtual std::string get_type() { std::cout << "hi2" << std::endl; return std::string(); }
-  virtual std::vector<std::string> get_args_types() { std::cout << "hi3" << std::endl; return std::vector<std::string>(); }
-  virtual std::vector<std::string> get_args_names() { std::cout << "hi4" << std::endl; return std::vector<std::string>(); }
-  virtual void add_formal_decl(AbsCls*) {std::cout << "hi5" << std::endl; }
-  virtual bool get_is_const() { std::cout << "hi6" << std::endl; return true; }
-
+  virtual std::string get_name() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::string(); }
+  virtual std::string get_type() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::string(); }
+  virtual std::vector<std::string> get_args_types() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
+  virtual std::vector<std::string> get_args_names() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
+  virtual void add_formal_decl(AbsCls*) { std::cerr << "Unexpected error" << std::endl; exit(1); }
+  virtual bool get_is_const() { std::cerr << "Unexpected error" << std::endl; exit(1); return true; }
   virtual ~AbsCls() {}
 };
 
@@ -92,6 +85,16 @@ public:
   TypeCls(std::string name);
   std::string get_name() override { return name; }
   virtual ~TypeCls() {}
+};
+
+
+class TypeAnnotationCls : public AbsCls {
+private:
+  bool is_const;
+public:
+  TypeAnnotationCls(bool is_const);
+  bool get_is_const() override { return is_const; }
+  virtual ~TypeAnnotationCls() {}
 };
 
 

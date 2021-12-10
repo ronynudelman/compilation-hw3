@@ -44,3 +44,6 @@ TypeCls::TypeCls(std::string name) : name(name) {}
 
 
 IDCls::IDCls(std::string name) : name(name) {}
+
+
+TypeAnnotationCls::TypeAnnotationCls(bool is_const) : is_const(is_const) {}

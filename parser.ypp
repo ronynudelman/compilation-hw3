@@ -43,79 +43,204 @@
 %%
 
 
-Program		:	Funcs                                                     		{check_main_exist(); close_scope();}
+Program									:	Funcs
+													{check_main_exist(); close_scope();}
 ;
-Funcs		:	/*epsilon*/                                                  		{}
-				|	FuncDecl Funcs                                              		{}
+
+Funcs										:	/*epsilon*/
+												|	FuncDecl
+													Funcs
 ;
-FuncDecl	:	RetType
-						ID
-						LPAREN
-						Formals
-						RPAREN
-						{add_func_to_symbol_table($2->get_name(), $1->get_name(), $4->get_args_types());}
-						LBRACE
-						{open_scope(); add_func_args_to_symbol_table($4->get_args_types(), $4->get_args_names());}
-						Statements
-						RBRACE
-						{close_scope();}
+
+FuncDecl								:	RetType
+													ID
+													LPAREN
+													Formals
+													RPAREN
+													{add_func_to_symbol_table($2->get_name(), $1->get_name(), $4->get_args_types());}
+													LBRACE
+													{open_scope(); add_func_args_to_symbol_table($4->get_args_types(), $4->get_args_names());}
+													Statements
+													RBRACE
+													{close_scope();}
 ;
-RetType		:	Type                                                         	{$$ = new RetTypeCls($1->get_name());}
-					|	VOID                                                         	{$$ = new RetTypeCls("VOID");}
+
+RetType									:	Type
+													{$$ = new RetTypeCls($1->get_name());}
+												|	VOID
+													{$$ = new RetTypeCls("VOID");}
 ;
-Formals		:	/*epsilon*/                                                  	{$$ = new FormalsCls();}
-					|	FormalsList                                                  	{$$ = new FormalsCls($1->get_args_types(), $1->get_args_names());}
+
+Formals									:	/*epsilon*/
+													{$$ = new FormalsCls();}
+												|	FormalsList
+													{$$ = new FormalsCls($1->get_args_types(), $1->get_args_names());}
 ;
-FormalsList	:	FormalDecl                       {$$ = new FormalsListCls(); $$->add_formal_decl($1);}
-						|	FormalDecl COMMA FormalsList     {$3->add_formal_decl($1);}
+
+FormalsList							:	FormalDecl
+													{$$ = new FormalsListCls(); $$->add_formal_decl($1);}
+												|	FormalDecl
+													COMMA
+													FormalsList
+													{$3->add_formal_decl($1);}
 ;
-FormalDecl	:	TypeAnnotation Type ID       {$$ = new FormalDeclCls($1->get_is_const(), $2->get_name(), $3->get_name());}
+
+FormalDecl							:	TypeAnnotation
+													Type
+													ID
+													{$$ = new FormalDeclCls($1->get_is_const(), $2->get_name(), $3->get_name());}
 ;
-Statements	:	Statement                                                		{ }
-						|	Statements Statement                                  			{ }
+
+Statements							:	Statement
+													{/* TODO */}
+												|	Statements
+													Statement
+													{/* TODO */}
 ;
-Statement	:	LBRACE Statements RBRACE                                     	{ }
-					|	TypeAnnotation Type ID SC                                    	{ }
-					|	TypeAnnotation Type ID ASSIGN Exp SC                         	{ }
-					|	ID ASSIGN Exp SC                                             	{ }
-					|	Call SC                                                      	{ }
-					|	RETURN SC                                                    	{ }
-					|	RETURN Exp SC                                                	{ }
-					|	IF LPAREN Exp RPAREN Statement                               	{ }
-					|	IF LPAREN Exp RPAREN Statement ELSE Statement                	{ }
-					|	WHILE LPAREN Exp RPAREN Statement                            	{ }
-					|	BREAK SC                                                     	{ }
-					|	CONTINUE SC                                                  	{ }
+
+Statement								:	LBRACE
+													Statements
+													RBRACE
+													{/* TODO */}
+												|	TypeAnnotation
+													Type
+													ID
+													SC
+													{/* TODO */}
+												|	TypeAnnotation
+													Type
+													ID
+													ASSIGN
+													Exp
+													SC
+													{/* TODO */}
+												|	ID
+													ASSIGN
+													Exp
+													SC
+													{/* TODO */}
+												|	Call
+													SC
+													{/* TODO */}
+												|	RETURN
+													SC
+													{/* TODO */}
+												|	RETURN
+													Exp
+													SC
+													{/* TODO */}
+												|	IF
+													LPAREN
+													Exp
+													RPAREN
+													Statement
+													{/* TODO */}
+												|	IF
+													LPAREN
+													Exp
+													RPAREN
+													Statement
+													ELSE
+													Statement
+													{/* TODO */}
+												|	WHILE
+													LPAREN
+													Exp
+													RPAREN
+													Statement
+													{/* TODO */}
+												|	BREAK
+													SC
+													{/* TODO */}
+												|	CONTINUE
+													SC
+													{/* TODO */}
 ;
-Call		:	ID LPAREN ExpList RPAREN                                     		{ }
-				|	ID LPAREN RPAREN                                             		{ }
+
+Call										:	ID
+													LPAREN
+													ExpList
+													RPAREN
+													{/* TODO */}
+												|	ID
+													LPAREN
+													RPAREN
+													{/* TODO */}
 ;
-ExpList		:	Exp                                                        		{ }
-					|	Exp COMMA ExpList                                            	{ }
+
+ExpList									:	Exp
+													{/* TODO */}
+												|	Exp
+													COMMA
+													ExpList
+													{/* TODO */}
 ;
-Type		:	INT                                                          		{$$ = new TypeCls("INT");}
-				|	BYTE                                                         		{$$ = new TypeCls("BYTE");}
-				|	BOOL                                                         		{$$ = new TypeCls("BOOL");}
+
+Type										:	INT
+													{$$ = new TypeCls("INT");}
+												|	BYTE
+													{$$ = new TypeCls("BYTE");}
+												|	BOOL
+													{$$ = new TypeCls("BOOL");}
 ;
-TypeAnnotation	:	/*epsilon*/                               							{ }
-								|	CONST                                                   { }
+
+TypeAnnotation					:	/*epsilon*/
+													{$$ = new TypeAnnotationCls(false);}
+												|	CONST
+													{$$ = new TypeAnnotationCls(true);}
 ;
-Exp			:	LPAREN Exp RPAREN                                          			{ }
-				|	Exp BINOP_MUL Exp                                           		{ }
-				|	Exp BINOP_ADD Exp                                            		{ }
-				|	ID                                                           		{ }
-				|	Call                                                         		{ }
-				|	NUM                                                          		{ }
-				|	NUM B                                                        		{ }
-				|	STRING                                                       		{ }
-				|	TRUE                                                         		{ }
-				|	FALSE                                                        		{ }
-				|	NOT Exp                                                      		{ }
-				|	Exp AND Exp                                                  		{ }
-				|	Exp OR Exp                                                   		{ }
-				|	Exp RELOP_COMPARE Exp                                        		{ }
-				|	Exp RELOP_EQUAL Exp                                          		{ }
-				|	LPAREN Type RPAREN Exp						 															{ }
+
+Exp											:	LPAREN
+													Exp
+													RPAREN
+													{/* TODO */}
+												|	Exp
+													BINOP_MUL
+													Exp
+													{/* TODO */}
+												|	Exp
+													BINOP_ADD
+													Exp
+													{/* TODO */}
+												|	ID
+													{/* TODO */}
+												|	Call
+													{/* TODO */ }
+												|	NUM
+													{/* TODO */}
+												|	NUM
+													B
+													{/* TODO */}
+												|	STRING
+													{/* TODO */}
+												|	TRUE
+													{/* TODO */}
+												|	FALSE
+													{/* TODO */}
+												|	NOT
+													Exp
+													{/* TODO */}
+												|	Exp
+													AND
+													Exp
+													{/* TODO */}
+												|	Exp
+													OR
+													Exp
+													{/* TODO */}
+												|	Exp
+													RELOP_COMPARE
+													Exp
+													{/* TODO */}
+												|	Exp
+													RELOP_EQUAL
+													Exp
+													{/* TODO */}
+												|	LPAREN
+													Type
+													RPAREN
+													Exp
+													{/* TODO */}
 ;
 
 
@@ -123,7 +248,7 @@ Exp			:	LPAREN Exp RPAREN                                          			{ }
 
 
 void yyerror(const char* input) {
-	// TODO - need to complete
+	/* TODO */
 	exit(1);
 }
 
