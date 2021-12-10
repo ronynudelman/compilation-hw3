@@ -24,7 +24,7 @@ public:
   virtual std::vector<std::string> get_args_names() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
   virtual void add_formal_decl(AbsCls*) { std::cerr << "Unexpected error" << std::endl; exit(1); }
   virtual bool get_is_const() { std::cerr << "Unexpected error" << std::endl; exit(1); return true; }
-  virtual ~AbsCls() {}
+  virtual ~AbsCls() = default;
 };
 
 
@@ -38,7 +38,6 @@ public:
   std::string get_name() override { return name; }
   std::string get_type() override { return type; }
   bool get_is_const() override { return is_const; }
-  virtual ~FormalDeclCls() {}
 };
 
 
@@ -51,7 +50,6 @@ public:
   std::vector<std::string> get_args_names() override { return args_names; }
   FormalsListCls() = default;
   void add_formal_decl(AbsCls*) override;
-  virtual ~FormalsListCls() {}
 };
 
 
@@ -64,7 +62,6 @@ public:
   std::vector<std::string> get_args_names() override { return args_names; }
   FormalsCls(std::vector<std::string> args_types = std::vector<std::string>(),
              std::vector<std::string> args_names = std::vector<std::string>());
-  virtual ~FormalsCls() {}
 };
 
 
@@ -74,7 +71,6 @@ private:
 public:
   std::string get_name() override { return name; }
   RetTypeCls(std::string name);
-  virtual ~RetTypeCls() {}
 };
 
 
@@ -84,7 +80,6 @@ private:
 public:
   TypeCls(std::string name);
   std::string get_name() override { return name; }
-  virtual ~TypeCls() {}
 };
 
 
@@ -94,7 +89,6 @@ private:
 public:
   TypeAnnotationCls(bool is_const);
   bool get_is_const() override { return is_const; }
-  virtual ~TypeAnnotationCls() {}
 };
 
 
@@ -104,7 +98,6 @@ private:
 public:
   IDCls(std::string name);
   std::string get_name() override { return name; }
-  virtual ~IDCls() {}
 };
 
 
