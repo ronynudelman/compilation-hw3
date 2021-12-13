@@ -16,7 +16,7 @@ int                                           return INT;
 byte                                          return BYTE;
 b                                             return B;
 bool                                          return BOOL;
-const										                      return CONST;
+const										  return CONST;
 and                                           return AND;
 or                                            return OR;
 not                                           return NOT;

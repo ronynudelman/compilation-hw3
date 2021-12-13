@@ -49,23 +49,13 @@ void SymbolTable::pop_entry() {
   symbol_table_entries.pop_back();
 }
 
-bool SymbolTable::is_symbol_exist(std::string name) {
+SymbolTableEntry* SymbolTable::get_entry_by_name(std::string name) {
   for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
-    if ((*it).get_name() == name) {
-      return true;
+    if (it->get_name() == name) {
+      return &(*it);
     }
   }
-  return false;
-}
-
-
-bool SymbolTable::is_main_func_exist() {
-  for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
-    if ((*it).get_name() == "main" && (*it).get_type() == "VOID" && (*it).get_is_func() && (*it).get_arguments().empty()) {
-      return true;
-    }
-  }
-  return false;
+  return nullptr;
 }
 
 
@@ -112,20 +102,14 @@ SymbolTable& SymbolTableStack::top_symbol_table() {
 }
 
 
-bool SymbolTableStack::is_symbol_exist(std::string name) {
+SymbolTableEntry* SymbolTableStack::get_entry_by_name(std::string name) {
   for (std::list<SymbolTable>::iterator it = symbol_tables.begin(); it != symbol_tables.end(); ++it) {
-    if ((*it).is_symbol_exist(name)) {
-      return true;
-    }
+    SymbolTableEntry* entry = it->get_entry_by_name(name);
+	if(entry){
+		return entry;
+	}
   }
-  return false;
-}
-
-
-bool SymbolTableStack::is_main_func_exist() {
-  assert(symbol_tables.size() == 1);
-  SymbolTable symbol_table = symbol_tables.back();
-  return symbol_table.is_main_func_exist();
+  return nullptr;
 }
 
 

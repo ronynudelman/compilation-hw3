@@ -17,6 +17,7 @@ FormalDeclCls::FormalDeclCls(bool is_const, std::string type, std::string name) 
                                                                                   name(name)
                                                                                   {}
 
+FormalsListCls::FormalsListCls(std::vector<std::string> args_types, std::vector<std::string> args_names) : args_types(args_types), args_names(args_names){}
 
 void FormalsListCls::add_formal_decl(AbsCls* new_decl) {
   std::string new_type;
@@ -47,3 +48,5 @@ IDCls::IDCls(std::string name) : name(name) {}
 
 
 TypeAnnotationCls::TypeAnnotationCls(bool is_const) : is_const(is_const) {}
+
+ExpCls::ExpCls(std::string type) : type(type) {}

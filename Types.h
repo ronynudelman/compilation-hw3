@@ -18,12 +18,12 @@ extern const std::string const_bool_type;
 
 class AbsCls {
 public:
-  virtual std::string get_name() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::string(); }
-  virtual std::string get_type() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::string(); }
-  virtual std::vector<std::string> get_args_types() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
-  virtual std::vector<std::string> get_args_names() { std::cerr << "Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
-  virtual void add_formal_decl(AbsCls*) { std::cerr << "Unexpected error" << std::endl; exit(1); }
-  virtual bool get_is_const() { std::cerr << "Unexpected error" << std::endl; exit(1); return true; }
+  virtual std::string get_name() { std::cerr << "1 Unexpected error" << std::endl; exit(1); return std::string(); }
+  virtual std::string get_type() { std::cerr << "2 Unexpected error" << std::endl; exit(1); return std::string(); }
+  virtual std::vector<std::string> get_args_types() { std::cerr << "3 Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
+  virtual std::vector<std::string> get_args_names() { std::cerr << "4 Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
+  virtual void add_formal_decl(AbsCls*) { std::cerr << "5 Unexpected error" << std::endl; exit(1); }
+  virtual bool get_is_const() { std::cerr << "6 Unexpected error" << std::endl; exit(1); return true; }
   virtual ~AbsCls() = default;
 };
 
@@ -49,6 +49,7 @@ public:
   std::vector<std::string> get_args_types() override { return args_types; }
   std::vector<std::string> get_args_names() override { return args_names; }
   FormalsListCls() = default;
+  FormalsListCls(std::vector<std::string> args_types, std::vector<std::string> args_names);
   void add_formal_decl(AbsCls*) override;
 };
 
@@ -69,8 +70,8 @@ class RetTypeCls : public AbsCls {
 private:
   std::string name;
 public:
-  std::string get_name() override { return name; }
   RetTypeCls(std::string name);
+  std::string get_name() override { return name; }
 };
 
 
@@ -98,6 +99,14 @@ private:
 public:
   IDCls(std::string name);
   std::string get_name() override { return name; }
+};
+
+class ExpCls : public AbsCls {
+private:
+	std::string type;
+public:
+	ExpCls(std::string type);
+	std::string get_type() override { return type; }
 };
 
 

@@ -34,8 +34,7 @@ public:
   void push_entry(std::string name, int offset, std::string type, bool is_func = false,
                   std::vector<std::string> arguments = std::vector<std::string>());
   void pop_entry();
-  bool is_symbol_exist(std::string name);
-  bool is_main_func_exist();
+  SymbolTableEntry* get_entry_by_name(std::string name);
   void print();
 };
 
@@ -48,8 +47,7 @@ public:
   void push_symbol_table();
   void pop_symbol_table();
   SymbolTable& top_symbol_table();
-  bool is_symbol_exist(std::string name);
-  bool is_main_func_exist();
+  SymbolTableEntry* get_entry_by_name(std::string name);
   void print_top_symbol_table();
 };
 
