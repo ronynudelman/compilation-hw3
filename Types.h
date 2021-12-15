@@ -6,15 +6,6 @@
 #include <vector>
 #include <iostream>
 
-extern const std::string void_type;
-extern const std::string int_type;
-extern const std::string byte_type;
-extern const std::string bool_type;
-extern const std::string string_type;
-extern const std::string const_int_type;
-extern const std::string const_byte_type;
-extern const std::string const_bool_type;
-
 
 class AbsCls {
 public:
@@ -22,7 +13,7 @@ public:
   virtual std::string get_type() { std::cerr << "2 Unexpected error" << std::endl; exit(1); return std::string(); }
   virtual std::vector<std::string> get_args_types() { std::cerr << "3 Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
   virtual std::vector<std::string> get_args_names() { std::cerr << "4 Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
-  virtual void add_formal_decl(AbsCls*) { std::cerr << "5 Unexpected error" << std::endl; exit(1); }
+  virtual void add_new_func_arg(AbsCls*) { std::cerr << "5 Unexpected error" << std::endl; exit(1); }
   virtual bool get_is_const() { std::cerr << "6 Unexpected error" << std::endl; exit(1); return true; }
   virtual ~AbsCls() = default;
 };
@@ -50,7 +41,7 @@ public:
   std::vector<std::string> get_args_names() override { return args_names; }
   FormalsListCls() = default;
   FormalsListCls(std::vector<std::string> args_types, std::vector<std::string> args_names);
-  void add_formal_decl(AbsCls*) override;
+  void add_new_func_arg(AbsCls*) override;
 };
 
 
@@ -108,6 +99,28 @@ public:
 	ExpCls(std::string type);
 	std::string get_type() override { return type; }
 };
+
+
+class CallCls : public AbsCls {
+private:
+	std::string type;
+public:
+	CallCls(std::string type);
+	std::string get_type() override { return type; }
+};
+
+
+class ExpListCls : public AbsCls {
+private:
+  std::vector<std::string> args_types;
+public:
+  std::vector<std::string> get_args_types() override { return args_types; }
+  ExpListCls() = default;
+  ExpListCls(std::vector<std::string> args_types);
+  void add_new_func_arg(AbsCls*) override;
+};
+
+
 
 
 #endif // TYPES_H_

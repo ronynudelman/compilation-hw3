@@ -24,6 +24,7 @@ void func2(const bool b1) {
 
 int func3(bool arg1, int arg2) {
   int x = arg2 * (5 + (int)(22b));
+  func2(true);
   return x;
 }
 

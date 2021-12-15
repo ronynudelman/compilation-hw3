@@ -35,6 +35,7 @@ public:
                   std::vector<std::string> arguments = std::vector<std::string>());
   void pop_entry();
   SymbolTableEntry* get_entry_by_name(std::string name);
+  SymbolTableEntry& top_symbol_table_entry();
   void print();
 };
 
@@ -47,6 +48,7 @@ public:
   void push_symbol_table();
   void pop_symbol_table();
   SymbolTable& top_symbol_table();
+  SymbolTable& first_symbol_table();
   SymbolTableEntry* get_entry_by_name(std::string name);
   void print_top_symbol_table();
 };

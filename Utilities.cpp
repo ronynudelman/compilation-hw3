@@ -8,9 +8,30 @@
 
 SymbolTableStack symbol_table_stack;
 OffsetTableStack offset_table_stack;
+bool is_inside_while;
 
 static bool is_type_starts_with_const(std::string type){
 	return std::string::npos != type.find("CONST");
+}
+
+static SymbolTableEntry& get_last_func() {
+	return symbol_table_stack.first_symbol_table().top_symbol_table_entry();
+}
+
+static std::string strip_const(std::string type){
+	if(std::string::npos  == type.find("CONST")){
+		return type;
+	}
+	std::string stripped_type = type.replace(0, 6, "");
+	return stripped_type;
+}
+
+static std::vector<std::string> strip_const(std::vector<std::string> types){
+	std::vector<std::string> stripped_types;
+	for (std::vector<std::string>::iterator it = types.begin(); it != types.end(); ++it) {
+		stripped_types.push_back(strip_const(*it));
+	}
+	return stripped_types;
 }
 
 void check_main_exist() {
@@ -79,7 +100,7 @@ void add_var_to_symbol_table (bool is_const, std::string type, std::string name)
 }
 
 void check_matching_types(std::string type_a, std::string type_b){
-	if (type_a != type_b){
+	if (strip_const(type_a) != strip_const(type_b)){
 		output::errorMismatch(yylineno);
 		exit(1);
 	}
@@ -164,21 +185,47 @@ void check_valid_types_for_assign(std::string left_type, std::string right_type)
 }
 
 
+std::string check_valid_func_call(std::string func_name, std::vector<std::string> args_types) {
+	SymbolTableEntry* func_entry = symbol_table_stack.get_entry_by_name(func_name);
+	if(!func_entry || func_entry->get_is_func() == false) {
+		 output::errorUndefFunc(yylineno, func_name);
+		 exit(1);
+	}
+	std::vector<std::string> reverse_args_types;
+	for (std::vector<std::string>::reverse_iterator it = args_types.rbegin(); it != args_types.rend(); ++it) {
+		reverse_args_types.push_back(*it);
+	}
+	std::vector<std::string> func_entry_args(func_entry->get_arguments());
+	std::vector<std::string> stripped_func_entry_args = strip_const(func_entry_args);
+	std::vector<std::string> stripped_reverse_args_types = strip_const(reverse_args_types);
+	
+	if(stripped_func_entry_args != stripped_reverse_args_types){
+		output::errorPrototypeMismatch(yylineno, func_name, func_entry_args);
+		exit(1);
+	}
+	return func_entry->get_type();
+}
 
 
+void check_valid_ret_type(std::string ret_type) {
+	check_matching_types(get_last_func().get_type(), ret_type);
+}
 
 
+void check_legal_break(){
+	if(!is_inside_while){
+		output::errorUnexpectedBreak(yylineno);
+		exit(1);
+	}
+}
 
 
-
-
-
-
-
-
-
-
-
+void check_legal_continue(){
+	if(!is_inside_while){
+		output::errorUnexpectedContinue(yylineno);
+		exit(1);
+	}
+}
 
 
 

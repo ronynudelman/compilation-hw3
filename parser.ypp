@@ -43,7 +43,8 @@
 %%
 
 
-Program											:	Funcs
+Program											:	{is_inside_while = false;}
+													Funcs
 													{check_main_exist(); close_scope();}
 ;
 
@@ -78,11 +79,11 @@ Formals											:	/*epsilon*/
 ;
 
 FormalsList									:	FormalDecl
-													{$$ = new FormalsListCls(); $$->add_formal_decl($1);}
+													{$$ = new FormalsListCls(); $$->add_new_func_arg($1);}
 												|	FormalDecl
 													COMMA
 													FormalsList
-													{$$ = new FormalsListCls($3->get_args_types(),$3->get_args_names()); $$->add_formal_decl($1); }
+													{$$ = new FormalsListCls($3->get_args_types(),$3->get_args_names()); $$->add_new_func_arg($1); }
 ;
 
 FormalDecl							:	TypeAnnotation
@@ -91,11 +92,9 @@ FormalDecl							:	TypeAnnotation
 													{$$ = new FormalDeclCls($1->get_is_const(), $2->get_name(), $3->get_name());}
 ;
 
-Statements							:	Statement
-													{/* TODO */}
+Statements										:	Statement
 												|	Statements
 													Statement
-													{/* TODO */}
 ;
 
 Statement										:	LBRACE
@@ -122,59 +121,67 @@ Statement										:	LBRACE
 													{check_var_valid_for_assign($1->get_name()); std::string id_type = get_id_type($1->get_name()); check_valid_types_for_assign(id_type, $3->get_type());}
 												|	Call
 													SC
-													{/* TODO */}
+													{/* TODO-EMPTY */}
 												|	RETURN
 													SC
-													{/* TODO */}
+													{check_valid_ret_type("VOID");}
 												|	RETURN
 													Exp
 													SC
-													{/* TODO --> check that exp-return type matches the function */}
-												|	IF
+													{check_valid_ret_type($2->get_type());}
+												|	IF //TODO -> CREATE NEW RULE "IF_CASE" FOR ALL RULES AFTER "{open_scope();}"
+													{open_scope();}
 													LPAREN
 													Exp
+													{check_matching_types("BOOL", $4->get_type());}
 													RPAREN
 													Statement
-													{/* TODO --> open scope for if-itself, open scope for if-block*/}
+													{close_scope();}
 												|	IF
+													{open_scope();}
 													LPAREN
 													Exp
+													{check_matching_types("BOOL", $4->get_type());}
 													RPAREN
 													Statement
+													{close_scope();}
 													ELSE
+													{open_scope();}
 													Statement
-													{/* TODO --> open scope for if-itself (ensure exp is boolean), open scope for if-block, close both(?) and open scope for else*/}
+													{close_scope();}
 												|	WHILE
+													{is_inside_while = true; open_scope();}
 													LPAREN
 													Exp
+													{check_matching_types("BOOL", $4->get_type());}
 													RPAREN
 													Statement
-													{/* TODO --> open scope for while-itself (ensure exp is boolean), open scope for while-block*/}
+													{close_scope(); is_inside_while = false;}
 												|	BREAK
 													SC
-													{/* TODO --> ensure we are in while loop*/}
+													{check_legal_break();}
 												|	CONTINUE
 													SC
-													{/* TODO --> what is there to do? */}
+													{check_legal_continue();}
 ;
 
 Call											:	ID
 													LPAREN
 													ExpList
 													RPAREN
-													{/* TODO --> calling a func. ensure func exists & right params (ExpList need to have arg_vector)*/}
+													{std::string func_ret_type = check_valid_func_call($1->get_name(), $3->get_args_types()); $$ = new CallCls(func_ret_type);}
 												|	ID
 													LPAREN
 													RPAREN
-													{/* TODO --> calling a func. ensure func exists & requires no params*/}
+													{std::string func_ret_type = check_valid_func_call($1->get_name()); $$ = new CallCls(func_ret_type);}
 ;
 
-ExpList	/*basically FormalsList...*/			:	Exp
-													{/* TODO */}
+ExpList											:	Exp
+													{$$ = new ExpListCls(); $$->add_new_func_arg($1);}
 												|	Exp
 													COMMA
 													ExpList
-													{/* TODO */}
+													{$$ = new ExpListCls($3->get_args_types()); $$->add_new_func_arg($1);}
 ;
 
 Type										:	INT
@@ -206,7 +213,7 @@ Exp												:	LPAREN
 												|	ID
 													{$$ = new ExpCls(get_id_type($1->get_name()));}
 												|	Call
-													{/* TODO */ }
+													{$$ = new ExpCls($1->get_type());}
 												|	NUM
 													{$$ = new ExpCls("INT");}
 												|	NUM

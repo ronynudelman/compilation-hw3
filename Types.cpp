@@ -2,16 +2,6 @@
 #include "Types.h"
 
 
-const std::string void_type = "VOID";
-const std::string int_type = "INT";
-const std::string byte_type = "BYTE";
-const std::string bool_type = "BOOL";
-const std::string string_type = "STRING";
-const std::string const_int_type = "CONST INT";
-const std::string const_byte_type = "CONST BYTE";
-const std::string const_bool_type = "CONST BOOL";
-
-
 FormalDeclCls::FormalDeclCls(bool is_const, std::string type, std::string name) : is_const(is_const),
                                                                                   type(type),
                                                                                   name(name)
@@ -19,7 +9,7 @@ FormalDeclCls::FormalDeclCls(bool is_const, std::string type, std::string name) 
 
 FormalsListCls::FormalsListCls(std::vector<std::string> args_types, std::vector<std::string> args_names) : args_types(args_types), args_names(args_names){}
 
-void FormalsListCls::add_formal_decl(AbsCls* new_decl) {
+void FormalsListCls::add_new_func_arg(AbsCls* new_decl) {
   std::string new_type;
   if (new_decl->get_is_const()) {
     new_type = std::string("CONST ") + new_decl->get_type();
@@ -49,4 +39,17 @@ IDCls::IDCls(std::string name) : name(name) {}
 
 TypeAnnotationCls::TypeAnnotationCls(bool is_const) : is_const(is_const) {}
 
+
 ExpCls::ExpCls(std::string type) : type(type) {}
+
+
+CallCls::CallCls(std::string type) : type(type) {}
+
+
+ExpListCls::ExpListCls(std::vector<std::string> args_types) : args_types(args_types) {}
+
+
+void ExpListCls::add_new_func_arg(AbsCls* exp_new_type) {
+  args_types.push_back(exp_new_type->get_type());
+}
+

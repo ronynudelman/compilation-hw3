@@ -73,6 +73,12 @@ void SymbolTable::print() {
   }
 }
 
+SymbolTableEntry& SymbolTable::top_symbol_table_entry() {
+	return symbol_table_entries.back();
+}
+
+
+
 
 SymbolTableStack::SymbolTableStack() : symbol_tables(std::list<SymbolTable>()) {
   SymbolTable new_symbol_table;
@@ -116,6 +122,11 @@ SymbolTableEntry* SymbolTableStack::get_entry_by_name(std::string name) {
 void SymbolTableStack::print_top_symbol_table() {
   SymbolTable symbol_table = top_symbol_table();
   symbol_table.print();
+}
+
+
+SymbolTable& SymbolTableStack::first_symbol_table() {
+	return symbol_tables.front();
 }
 
 

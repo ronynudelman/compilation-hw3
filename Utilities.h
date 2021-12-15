@@ -9,7 +9,7 @@
 
 extern SymbolTableStack symbol_table_stack;
 extern OffsetTableStack offset_table_stack;
-
+extern bool is_inside_while;
 
 void check_main_exist();
 void open_scope();
@@ -25,4 +25,8 @@ std::string handle_binop_exp(std::string type_a, std::string type_b);
 void handle_relop_exp(std::string type_a, std::string type_b);
 void handle_cast_exp(std::string type_a, std::string type_b);
 void check_valid_types_for_assign(std::string left_type, std::string right_type);
+std::string check_valid_func_call(std::string func_name, std::vector<std::string> args_types = std::vector<std::string>());
+void check_valid_ret_type(std::string ret_type);
+void check_legal_break();
+void check_legal_continue();
 #endif // UTILITIES_H_
