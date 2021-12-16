@@ -15,6 +15,8 @@ public:
   virtual std::vector<std::string> get_args_names() { std::cerr << "4 Unexpected error" << std::endl; exit(1); return std::vector<std::string>(); }
   virtual void add_new_func_arg(AbsCls*) { std::cerr << "5 Unexpected error" << std::endl; exit(1); }
   virtual bool get_is_const() { std::cerr << "6 Unexpected error" << std::endl; exit(1); return true; }
+  virtual int get_yylineno() { std::cerr << "7 Unexpected error" << std::endl; exit(1); return 0; }
+  virtual std::string get_value() { std::cerr << "8 Unexpected error" << std::endl; exit(1); return std::string(); }
   virtual ~AbsCls() = default;
 };
 
@@ -87,17 +89,21 @@ public:
 class IDCls : public AbsCls {
 private:
   std::string name;
+  int line_num;
 public:
-  IDCls(std::string name);
+  IDCls(std::string name, int line_num);
   std::string get_name() override { return name; }
+  int get_yylineno() override { return line_num; }
 };
 
 class ExpCls : public AbsCls {
 private:
 	std::string type;
+  std::string value;
 public:
-	ExpCls(std::string type);
+	ExpCls(std::string type, std::string value = std::string("0"));
 	std::string get_type() override { return type; }
+  std::string get_value() override { return value; }
 };
 
 
@@ -114,13 +120,20 @@ class ExpListCls : public AbsCls {
 private:
   std::vector<std::string> args_types;
 public:
-  std::vector<std::string> get_args_types() override { return args_types; }
   ExpListCls() = default;
   ExpListCls(std::vector<std::string> args_types);
+  std::vector<std::string> get_args_types() override { return args_types; }
   void add_new_func_arg(AbsCls*) override;
 };
 
 
+class NumCls : public AbsCls {
+private:
+  std::string value;
+public:
+  NumCls(std::string value);
+  std::string get_value() override { return value; }
+};
 
 
 #endif // TYPES_H_

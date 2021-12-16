@@ -34,13 +34,13 @@ RetTypeCls::RetTypeCls(std::string name) : name(name) {}
 TypeCls::TypeCls(std::string name) : name(name) {}
 
 
-IDCls::IDCls(std::string name) : name(name) {}
+IDCls::IDCls(std::string name, int line_num) : name(name), line_num(line_num) {}
 
 
 TypeAnnotationCls::TypeAnnotationCls(bool is_const) : is_const(is_const) {}
 
 
-ExpCls::ExpCls(std::string type) : type(type) {}
+ExpCls::ExpCls(std::string type, std::string value) : type(type), value(value) {}
 
 
 CallCls::CallCls(std::string type) : type(type) {}
@@ -53,3 +53,5 @@ void ExpListCls::add_new_func_arg(AbsCls* exp_new_type) {
   args_types.push_back(exp_new_type->get_type());
 }
 
+
+NumCls::NumCls(std::string value) : value(value) {}

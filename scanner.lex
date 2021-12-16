@@ -39,12 +39,12 @@ continue                                      return CONTINUE;
 ==|!=                                         return RELOP_EQUAL;
 [\*\/]                                    	  return BINOP_MUL;
 [\+\-]                                        return BINOP_ADD;
-[a-zA-Z][a-zA-Z0-9]*                          yylval = new IDCls(yytext); return ID;
-0|[1-9][0-9]*                                 return NUM;
+[a-zA-Z][a-zA-Z0-9]*                          yylval = new IDCls(yytext, yylineno); return ID;
+0|[1-9][0-9]*                                 yylval = new NumCls(yytext); return NUM;
 \"([^\n\r\"\\]|\\[rnt"\\])+\"			            return STRING;
 
 \/\/[^\r\n]*[ \r|\n|\r\n]?                    ;
 {whitespace}                                  ;
-.                                             ; // TODO handle error
+.                                             output::errorLex(yylineno); exit(1);
 
 %%
