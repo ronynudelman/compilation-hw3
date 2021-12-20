@@ -3,6 +3,7 @@
 #include <cassert>
 #include "hw3_output.hpp"
 #include "Tables.h"
+#include "Utilities.h"
 
 
 SymbolTableEntry::SymbolTableEntry(std::string name, int offset, std::string type, bool is_func,
@@ -63,10 +64,10 @@ void SymbolTable::print() {
   for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
     SymbolTableEntry current_entry = *it;
     std::string current_entry_name = current_entry.get_name();
-    std::string current_entry_type = current_entry.get_type();
+    std::string current_entry_type = strip_const(current_entry.get_type());
     int current_entry_offset = current_entry.get_offset();
     if (current_entry.get_is_func()) {
-      std::vector<std::string> current_entry_args = current_entry.get_arguments();
+      std::vector<std::string> current_entry_args = strip_const(current_entry.get_arguments());
       current_entry_type = output::makeFunctionType(current_entry_type, current_entry_args);
     }
     output::printID(current_entry_name, current_entry_offset, current_entry_type);

@@ -13,8 +13,6 @@ bool is_inside_while;
 
 static bool is_type_starts_with_const(std::string type);
 static SymbolTableEntry& get_last_func();
-static std::string strip_const(std::string type);
-static std::vector<std::string> strip_const(std::vector<std::string> types);
 static void check_func_args(std::vector<std::string> args_names);
 
 
@@ -24,22 +22,6 @@ static bool is_type_starts_with_const(std::string type){
 
 static SymbolTableEntry& get_last_func() {
 	return symbol_table_stack.first_symbol_table().top_symbol_table_entry();
-}
-
-static std::string strip_const(std::string type){
-	if(std::string::npos  == type.find("CONST")){
-		return type;
-	}
-	std::string stripped_type = type.replace(0, 6, "");
-	return stripped_type;
-}
-
-static std::vector<std::string> strip_const(std::vector<std::string> types){
-	std::vector<std::string> stripped_types;
-	for (std::vector<std::string>::iterator it = types.begin(); it != types.end(); ++it) {
-		stripped_types.push_back(strip_const(*it));
-	}
-	return stripped_types;
 }
 
 
@@ -58,6 +40,24 @@ static void check_func_args(std::vector<std::string> args_names) {
 			exit(1);
 		}
 	}
+}
+
+
+std::string strip_const(std::string type){
+	if(std::string::npos  == type.find("CONST")){
+		return type;
+	}
+	std::string stripped_type = type.replace(0, 6, "");
+	return stripped_type;
+}
+
+
+std::vector<std::string> strip_const(std::vector<std::string> types){
+	std::vector<std::string> stripped_types;
+	for (std::vector<std::string>::iterator it = types.begin(); it != types.end(); ++it) {
+		stripped_types.push_back(strip_const(*it));
+	}
+	return stripped_types;
 }
 
 
@@ -93,15 +93,14 @@ void add_func_to_symbol_table(std::string name, std::string ret_type, std::vecto
   for (std::vector<std::string>::reverse_iterator it = arguments.rbegin(); it != arguments.rend(); ++it) {
 		reverse_args.push_back(*it);
   }
-	SymbolTable& top_symbol_table = symbol_table_stack.top_symbol_table();
-  top_symbol_table.push_entry(name, 0, strip_const(ret_type), true, strip_const(reverse_args));
+  SymbolTable& top_symbol_table = symbol_table_stack.top_symbol_table();
+  top_symbol_table.push_entry(name, 0, ret_type, true, reverse_args);
 }
 
 
 void add_func_args_to_symbol_table(std::vector<std::string> args_types, std::vector<std::string> args_names) {
   assert(args_types.size() == args_names.size());
-	check_func_args(args_names);
-	args_types = strip_const(args_types);
+  check_func_args(args_names);
   if (!args_types.empty()){
 	 SymbolTable& top_symbol_table = symbol_table_stack.top_symbol_table();
 	 int arg_offset = -1;
