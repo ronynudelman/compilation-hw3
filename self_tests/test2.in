@@ -1,0 +1,10 @@
+
+//should fail - main doesn't exist
+int f(const bool x, const int y, const byte z, int t, byte i, bool p){
+	print("hi");
+}
+void main(){
+	int n;
+	return;
+}
+

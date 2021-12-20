@@ -1,0 +1,10 @@
+int f()
+{
+	if (true)
+	int x=10;
+}
+
+void main()
+{
+	return;
+}

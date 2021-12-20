@@ -1,0 +1,16 @@
+bool isPassing(int grade, int factor)
+{
+	int x;
+	{
+		bool y;
+		byte z;
+	}
+	bool w;
+	
+	return (grade+factor)>55;
+}
+
+void main()
+{
+	return;
+}

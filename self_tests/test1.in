@@ -1,0 +1,32 @@
+void main() {
+	int x = 3;
+}
+
+void func1(){
+	int x = 5;
+	const int y = 7;
+	x = y;
+	return;
+}
+
+int func2(int x, const int y){
+	if (x == y)
+		return x;
+		
+	else{
+		int z = x;
+		z = y;
+	}
+}
+
+int func3(){
+	const int x3 = 5;
+	return x3;
+}
+
+int func4(){
+	func1();
+	int x4 = func2(5,6);
+	int y4 = func3();
+}
+

@@ -1,0 +1,15 @@
+// should fail in line 13: assignment into function object
+
+
+
+int f(const bool y) {
+    if (1 == 1)
+        return 1;
+    return 0;
+}
+
+
+void main() {
+    f = 5;
+    return;
+}

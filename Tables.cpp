@@ -14,7 +14,7 @@ SymbolTableEntry::SymbolTableEntry(std::string name, int offset, std::string typ
                                                                         arguments(arguments) {}
 
 
-std::string SymbolTableEntry::get_name() {
+std::string& SymbolTableEntry::get_name() {
   return name;
 }
 
@@ -24,7 +24,7 @@ int SymbolTableEntry::get_offset() {
 }
 
 
-std::string SymbolTableEntry::get_type() {
+std::string& SymbolTableEntry::get_type() {
   return type;
 }
 
@@ -34,7 +34,7 @@ bool SymbolTableEntry::get_is_func() {
 }
 
 
-std::vector<std::string> SymbolTableEntry::get_arguments() {
+std::vector<std::string>& SymbolTableEntry::get_arguments() {
   return arguments;
 }
 
@@ -62,7 +62,7 @@ SymbolTableEntry* SymbolTable::get_entry_by_name(std::string name) {
 
 void SymbolTable::print() {
   for (std::list<SymbolTableEntry>::iterator it = symbol_table_entries.begin(); it != symbol_table_entries.end(); ++it) {
-    SymbolTableEntry current_entry = *it;
+    SymbolTableEntry& current_entry = *it;
     std::string current_entry_name = current_entry.get_name();
     std::string current_entry_type = strip_const(current_entry.get_type());
     int current_entry_offset = current_entry.get_offset();
@@ -74,11 +74,10 @@ void SymbolTable::print() {
   }
 }
 
+
 SymbolTableEntry& SymbolTable::top_symbol_table_entry() {
 	return symbol_table_entries.back();
 }
-
-
 
 
 SymbolTableStack::SymbolTableStack() : symbol_tables(std::list<SymbolTable>()) {
@@ -121,7 +120,7 @@ SymbolTableEntry* SymbolTableStack::get_entry_by_name(std::string name) {
 
 
 void SymbolTableStack::print_top_symbol_table() {
-  SymbolTable symbol_table = top_symbol_table();
+  SymbolTable& symbol_table = top_symbol_table();
   symbol_table.print();
 }
 

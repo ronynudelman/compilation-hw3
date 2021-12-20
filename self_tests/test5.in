@@ -1,0 +1,6 @@
+// should fail in line 5: types mismatch
+
+
+void main() {
+    return 5;
+}

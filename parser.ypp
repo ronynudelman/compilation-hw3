@@ -118,7 +118,7 @@ Statement										:	LBRACE
 													ASSIGN
 													Exp
 													SC
-													{check_var_valid_for_assign($1->get_name()); std::string id_type = get_id_type($1->get_name()); check_valid_types_for_assign(id_type, $3->get_type());}
+													{check_var_valid_for_assign($1->get_name()); std::string& id_type = get_id_type($1->get_name()); check_valid_types_for_assign(id_type, $3->get_type());}
 												|	Call
 													SC
 												|	RETURN
@@ -167,11 +167,11 @@ Call											:	ID
 													LPAREN
 													ExpList
 													RPAREN
-													{std::string func_ret_type = check_valid_func_call($1->get_name(), $3->get_args_types()); $$ = new CallCls(func_ret_type);}
+													{std::string& func_ret_type = check_valid_func_call($1->get_name(), $3->get_args_types()); $$ = new CallCls(func_ret_type);}
 												|	ID
 													LPAREN
 													RPAREN
-													{std::string func_ret_type = check_valid_func_call($1->get_name()); $$ = new CallCls(func_ret_type);}
+													{std::string& func_ret_type = check_valid_func_call($1->get_name()); $$ = new CallCls(func_ret_type);}
 ;
 
 ExpList											:	Exp

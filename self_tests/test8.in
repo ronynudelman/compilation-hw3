@@ -1,0 +1,7 @@
+// should fail in line 6: redefinition of variable
+
+
+void main() {
+    const bool x = false;
+    int x = 3;
+}

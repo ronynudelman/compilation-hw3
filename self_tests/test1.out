@@ -1,0 +1,25 @@
+---end scope---
+x INT 0
+---end scope---
+x INT 0
+y INT 1
+---end scope---
+---end scope---
+z INT 0
+---end scope---
+---end scope---
+x INT -1
+y INT -2
+---end scope---
+x3 INT 0
+---end scope---
+x4 INT 0
+y4 INT 1
+---end scope---
+print (STRING)->VOID 0
+printi (INT)->VOID 0
+main ()->VOID 0
+func1 ()->VOID 0
+func2 (INT,INT)->INT 0
+func3 ()->INT 0
+func4 ()->INT 0

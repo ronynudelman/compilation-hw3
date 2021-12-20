@@ -18,11 +18,11 @@ private:
 public:
   SymbolTableEntry(std::string name, int offset, std::string type, bool is_func = false,
                    std::vector<std::string> arguments = std::vector<std::string>());
-  std::string get_name();
+  std::string& get_name();
   int get_offset();
-  std::string get_type();
+  std::string& get_type();
   bool get_is_func();
-  std::vector<std::string> get_arguments();
+  std::vector<std::string>& get_arguments();
 };
 
 

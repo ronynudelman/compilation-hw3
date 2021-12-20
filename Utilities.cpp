@@ -11,12 +11,12 @@ OffsetTableStack offset_table_stack;
 bool is_inside_while;
 
 
-static bool is_type_starts_with_const(std::string type);
+static bool is_type_starts_with_const(const std::string& type);
 static SymbolTableEntry& get_last_func();
-static void check_func_args(std::vector<std::string> args_names);
+static void check_func_args(std::vector<std::string>& args_names);
 
 
-static bool is_type_starts_with_const(std::string type){
+static bool is_type_starts_with_const(const std::string& type){
 	return std::string::npos != type.find("CONST");
 }
 
@@ -25,7 +25,7 @@ static SymbolTableEntry& get_last_func() {
 }
 
 
-static void check_func_args(std::vector<std::string> args_names) {
+static void check_func_args(std::vector<std::string>& args_names) {
 	for (size_t i = 0; i < args_names.size(); i++) {
 		for (size_t j = i + 1; j < args_names.size(); j++) {
 			if (args_names[i] == args_names[j]) {
@@ -147,7 +147,7 @@ void check_var_valid_for_assign(std::string name){
 }
 
 
-std::string get_id_type(std::string name){
+std::string& get_id_type(std::string name){
 	SymbolTableEntry* id_entry = symbol_table_stack.get_entry_by_name(name);
 	if (id_entry == nullptr){
 		output::errorUndef(yylineno, name);
@@ -214,14 +214,14 @@ void check_valid_types_for_assign(std::string left_type, std::string right_type)
 }
 
 
-std::string check_valid_func_call(std::string func_name, std::vector<std::string> args_types) {
+std::string& check_valid_func_call(std::string func_name, std::vector<std::string> args_types) {
 	SymbolTableEntry* func_entry = symbol_table_stack.get_entry_by_name(func_name);
 	if(!func_entry || func_entry->get_is_func() == false) {
 		 output::errorUndefFunc(yylineno, func_name);
 		 exit(1);
 	}
 
-	std::vector<std::string> func_entry_args = func_entry->get_arguments();
+	std::vector<std::string>& func_entry_args = func_entry->get_arguments();
 	std::vector<std::string> reverse_args_types;
 	for (std::vector<std::string>::reverse_iterator it = args_types.rbegin(); it != args_types.rend(); ++it) {
 		reverse_args_types.push_back(*it);
@@ -233,10 +233,8 @@ std::string check_valid_func_call(std::string func_name, std::vector<std::string
 	}
 
 	for (size_t i = 0; i < func_entry_args.size(); i++) {
-		std::string type_a(func_entry_args[i]);
-		std::string type_b(reverse_args_types[i]);
-		std::string stripped_type_a = strip_const(type_a);
-		std::string stripped_type_b = strip_const(type_b);
+		std::string stripped_type_a = strip_const(func_entry_args[i]);
+		std::string stripped_type_b = strip_const(reverse_args_types[i]);
 		if (!(stripped_type_a == "INT" && stripped_type_b == "BYTE")) {
 			if (stripped_type_a != stripped_type_b){
 				output::errorPrototypeMismatch(yylineno, func_name, func_entry_args);
@@ -249,7 +247,7 @@ std::string check_valid_func_call(std::string func_name, std::vector<std::string
 
 
 void check_valid_ret_type(std::string ret_type) {
-	std::string last_func_ret_type = get_last_func().get_type();
+	std::string& last_func_ret_type = get_last_func().get_type();
 	if (!(std::string::npos != last_func_ret_type.find("INT") && std::string::npos != ret_type.find("BYTE"))) {
 		check_matching_types(last_func_ret_type, ret_type);
 	}

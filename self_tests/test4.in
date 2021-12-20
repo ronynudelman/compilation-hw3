@@ -1,0 +1,10 @@
+// should fail in line 4: types mismatch
+
+int f(int x) {
+    return true;
+}
+
+
+void main() {
+    return;
+}
