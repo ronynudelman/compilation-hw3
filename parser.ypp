@@ -43,7 +43,7 @@
 %%
 
 
-Program											:	{is_inside_while = false;}
+Program											:	{inside_while_counter = 0;}
 													Funcs
 													{check_main_exist(); close_scope();}
 ;
@@ -138,13 +138,13 @@ Statement										:	LBRACE
 													{close_scope();}
 													IfElse
 												|	WHILE
-													{is_inside_while = true; open_scope();}
+													{inside_while_counter++; open_scope();}
 													LPAREN
 													Exp
 													{check_matching_types("BOOL", $4->get_type());}
 													RPAREN
 													Statement
-													{close_scope(); is_inside_while = false;}
+													{close_scope(); inside_while_counter--;}
 												|	BREAK
 													SC
 													{check_legal_break();}

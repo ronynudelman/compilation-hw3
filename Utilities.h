@@ -9,7 +9,7 @@
 
 extern SymbolTableStack symbol_table_stack;
 extern OffsetTableStack offset_table_stack;
-extern bool is_inside_while;
+extern int inside_while_counter;
 
 std::string strip_const(std::string type);
 std::vector<std::string> strip_const(std::vector<std::string> types);

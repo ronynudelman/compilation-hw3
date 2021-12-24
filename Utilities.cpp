@@ -8,7 +8,7 @@
 
 SymbolTableStack symbol_table_stack;
 OffsetTableStack offset_table_stack;
-bool is_inside_while;
+int inside_while_counter;
 
 
 static bool is_type_starts_with_const(const std::string& type);
@@ -255,7 +255,7 @@ void check_valid_ret_type(std::string ret_type) {
 
 
 void check_legal_break(){
-	if(!is_inside_while){
+	if(!inside_while_counter){
 		output::errorUnexpectedBreak(yylineno);
 		exit(1);
 	}
@@ -263,7 +263,7 @@ void check_legal_break(){
 
 
 void check_legal_continue(){
-	if(!is_inside_while){
+	if(!inside_while_counter){
 		output::errorUnexpectedContinue(yylineno);
 		exit(1);
 	}
