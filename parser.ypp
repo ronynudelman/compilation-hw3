@@ -49,6 +49,7 @@ Program											:	{inside_while_counter = 0;}
 ;
 
 Funcs											:	/*epsilon*/
+														{if (yychar != YYEOF) yyerror("not EOF");}
 												|	FuncDecl
 													Funcs
 ;
