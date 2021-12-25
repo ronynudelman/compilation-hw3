@@ -29,6 +29,7 @@ void handle_cast_exp(std::string type_a, std::string type_b, std::string value);
 void check_valid_types_for_assign(std::string left_type, std::string right_type);
 std::string& check_valid_func_call(std::string func_name, std::vector<std::string> args_types = std::vector<std::string>());
 void check_valid_ret_type(std::string ret_type);
+void assert_not_void(std::string ret_type);
 void check_legal_break();
 void check_legal_continue();
 void check_byte_range(std::string value);

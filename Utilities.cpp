@@ -254,6 +254,14 @@ void check_valid_ret_type(std::string ret_type) {
 }
 
 
+void assert_not_void(std::string ret_type) {
+	if (ret_type == "VOID") {
+		output::errorMismatch(yylineno);
+		exit(1);
+	}
+}
+
+
 void check_legal_break(){
 	if(!inside_while_counter){
 		output::errorUnexpectedBreak(yylineno);

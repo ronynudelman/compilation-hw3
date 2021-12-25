@@ -128,7 +128,7 @@ Statement										:	LBRACE
 												|	RETURN
 													Exp
 													SC
-													{check_valid_ret_type($2->get_type());}
+													{assert_not_void($2->get_type()); check_valid_ret_type($2->get_type());}
 												|	IF
 													{open_scope();}
 													LPAREN
